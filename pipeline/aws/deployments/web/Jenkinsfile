@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    
+    environment {
+        AWS_SESSION_TOKEN = credentials('aws-session-token')
+    }
+    parameters {
+        string(name: 'ENVIRONMENT', description: 'Enter the environment (dev, stage, testing)')
+        string(name: 'PRODUCT', description: 'Enter the product name (default: Training)', defaultValue: 'Training')
+        string(name: 'SERVICE', description: 'Enter the service name (default: s3)', defaultValue: 's3')
+    }
+    stages {
+        stage('upload to s3') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws_creds',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {
+                    sh '''
+                        aws s3 sync ./mys3Bucket/staticS3Hosting/frontend s3://${ENVIRONMENT}-${PRODUCT}-${SERVICE}-bucket/
+                    '''
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            cleanWs()
+        }
+        failure {
+            echo 'Uploading failed. Please check the logs for details.'
+        }
+        success {
+            echo 'Uploaded successfully!'
+        }
+    }
+}

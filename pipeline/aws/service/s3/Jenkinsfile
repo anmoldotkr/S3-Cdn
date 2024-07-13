@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_SESSION_TOKEN = credentials('aws-session-token')
+    }
+    
+    parameters {
+        string(name: 'STACK_NAME', description: 'Enter your stack name')
+        string(name: 'REGION_NAME', description: 'Enter Region (e.g., us-east-1, us-east-2)')
+        string(name: 'ENVIRONMENT', description: 'Enter the environment (dev, stage, testing)')
+        string(name: 'PRODUCT', description: 'Enter the product name (default: Training)', defaultValue: 'Training')
+        string(name: 'SERVICE', description: 'Enter the service name (default: s3)', defaultValue: 's3')
+    }
+    
+    stages {
+        stage('aws-authentication') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws_creds',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {   
+                    script {
+                        sh """
+                            aws cloudformation deploy \
+                            --stack-name ${params.STACK_NAME} \
+                            --region ${params.REGION_NAME} \
+                            --parameter-overrides="${params.ENVIRONMENT}-${params.PRODUCT}-${params.SERVICE}-bucket" \
+                            --template-file ./mys3Bucket/staticS3Hosting/aws/cloudformation/service/s3WithCdn/s3WithCdn.yml
+                        """
+                    }
+                }
+            }  
+        }
+    }
+    
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            cleanWs()
+        }
+        failure {
+            echo 'Build failed. Please check the logs for details.'
+        }
+        success {
+            echo 'Build succeeded!'
+        }
+    }
+}
