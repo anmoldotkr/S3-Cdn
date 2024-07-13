@@ -28,7 +28,7 @@ pipeline {
                             --stack-name ${params.STACK_NAME} \
                             --region ${params.REGION_NAME} \
                             --parameter-overrides="${params.ENVIRONMENT}-${params.PRODUCT}-${params.SERVICE}-bucket" \
-                            --template-file ./S3&Cdn/s3WithCdn/s3WithCdn.yml
+                            --template-file ./s3WithCdn/s3WithCdn.yml
                         """
                     }
                 }
