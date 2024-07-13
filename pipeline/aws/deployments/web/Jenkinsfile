@@ -19,7 +19,7 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ]]) {
                     sh '''
-                        aws s3 sync ./mys3Bucket/staticS3Hosting/frontend s3://${ENVIRONMENT}-${PRODUCT}-${SERVICE}-bucket/
+                        aws s3 sync ./S3&Cdn/frontend s3://${ENVIRONMENT}-${PRODUCT}-${SERVICE}-bucket/
                     '''
                 }
             }
