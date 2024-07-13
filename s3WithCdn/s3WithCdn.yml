@@ -9,7 +9,7 @@ Parameters:
     Default: dev
   product:
     Type: String
-    Default: Training
+    Default: training
   service:
     Type: String
     Default: s3
