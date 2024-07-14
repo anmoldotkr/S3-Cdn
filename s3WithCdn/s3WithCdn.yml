@@ -6,16 +6,11 @@ Parameters:
       - dev
       - stage
       - testing
-    Default: dev
   product:
     Type: String
-    Default: training
   service:
     Type: String
-    Default: s3
-
 Resources:
-  # S3 Bucket
   S3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
@@ -32,8 +27,6 @@ Resources:
         BlockPublicPolicy: false
         IgnorePublicAcls: false
         RestrictPublicBuckets: false
-
-  # S3 Bucket Policy
   BucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
     Properties:
@@ -52,8 +45,6 @@ Resources:
               Service: cloudfront.amazonaws.com
             Action: "s3:GetObject"
             Resource: !Sub "arn:aws:s3:::${S3Bucket}/*"
-
-  # CloudFront Distribution
   CloudFrontDistribution:
     Type: 'AWS::CloudFront::Distribution'
     Properties:
