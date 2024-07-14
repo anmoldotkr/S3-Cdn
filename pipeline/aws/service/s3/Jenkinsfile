@@ -1,17 +1,14 @@
 pipeline {
     agent any
-
     environment {
         AWS_SESSION_TOKEN = credentials('session-token')
     }
-    
     parameters {
         string(name: 'REGION_NAME', description: 'Enter Region (e.g., us-east-1, us-east-2)')
         string(name: 'ENVIRONMENT', description: 'Enter the environment (dev, stage, testing)')
         string(name: 'PRODUCT', description: 'Enter the product name (default: Training)', defaultValue: 'training')
         string(name: 'SERVICE', description: 'Enter the service name (default: s3)', defaultValue: 's3')
     }
-    
     stages {
         stage('aws-authentication') {
             steps {
@@ -38,7 +35,6 @@ pipeline {
             }  
         }
     }
-    
     post {
         always {
             echo 'Cleaning up workspace...'
