@@ -27,7 +27,7 @@ pipeline {
                             aws cloudformation deploy \
                             --stack-name ${params.STACK_NAME} \
                             --region ${params.REGION_NAME} \
-                            --parameter-overrides ${params.ENVIRONMENT}-${params.PRODUCT}-${params.SERVICE}-bucket \
+                            --parameter-overrides=${params.ENVIRONMENT}-${params.PRODUCT}-${params.SERVICE}-bucket \
                             --template-file ./s3WithCdn/s3WithCdn.yml
                         """
                     }
