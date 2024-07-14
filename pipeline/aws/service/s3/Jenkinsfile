@@ -6,7 +6,6 @@ pipeline {
     }
     
     parameters {
-        string(name: 'STACK_NAME', description: 'Enter your stack name')
         string(name: 'REGION_NAME', description: 'Enter Region (e.g., us-east-1, us-east-2)')
         string(name: 'ENVIRONMENT', description: 'Enter the environment (dev, stage, testing)')
         string(name: 'PRODUCT', description: 'Enter the product name (default: Training)', defaultValue: 'training')
@@ -25,7 +24,7 @@ pipeline {
                     script {
                         sh """
                             aws cloudformation deploy \
-                            --stack-name ${params.STACK_NAME} \
+                            --stack-name StackName=${params.ENVIRONMENT}-${params.PRODUCT}-${params.SERVICE}-bucket \
                             --region ${params.REGION_NAME} \
                             --parameter-overrides BucketName=${params.ENVIRONMENT}-${params.PRODUCT}-${params.SERVICE}-bucket \
                             --template-file ./s3WithCdn/s3WithCdn.yml
